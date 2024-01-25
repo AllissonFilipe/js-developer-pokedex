@@ -1,4 +1,5 @@
 const pokemonList = document.getElementById('pokemonList')
+const pokemonHere = document.getElementById('pokemonHere')
 const loadMoreButton = document.getElementById('loadMoreButton')
 
 const maxRecords = 151
@@ -6,8 +7,10 @@ const limit = 10
 let offset = 0;
 
 function convertPokemonToLi(pokemon) {
+    const teste = JSON.stringify(pokemon);
+    pokemonHere.style.display = "none";
     return `
-        <li class="pokemon ${pokemon.type}">
+        <li class="pokemon ${pokemon.type}" onclick=getDetail(${teste})>
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
 
@@ -45,3 +48,31 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItens(offset, limit)
     }
 })
+
+function getDetail(pokemon) {
+    pokemonList.style.display = "none";
+    pokemonHere.style.display = "block";
+    loadMoreButton.style.display = "none";
+    pokemonHere.innerHTML += `
+        <li class="pokemon ${pokemon.type}">
+            <span class="number">#${pokemon.number}</span>
+            <span class="name">${pokemon.name}</span>
+
+            <div class="detail">
+                <ol class="types">
+                    ${pokemon.stats.map((stats) => `<li>${stats.stat.name} : ${stats.base_stat}</li>`).join('')}
+                </ol><br>
+                <img src="${pokemon.photo}" alt="${pokemon.name}">
+            </div>
+            <br>
+            <button onclick="voltar()"> Voltar </button>
+        </li>
+    `
+}
+
+function voltar() {
+    pokemonList.style.display = null;
+    loadMoreButton.style.display = null;
+    pokemonHere.innerHTML = null;
+    pokemonHere.style.display = "none";
+}
